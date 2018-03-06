@@ -6,50 +6,50 @@ import tensorflow as tf
 
 
 class Sample:
-    def __init__(self, source_dir, dest_file):
+    def __init__(self, source_dir, dest_file, length=32, skip=1):
         self.source_dir = source_dir
         self.dest_file = dest_file
+        self.length = length
+        self.skip = skip
 
-    def slice_video(self, input_file, length=32, skip=1):
+    def slice_video(self, input_file):
         frame_list_l = []
         frame_list_a = []
         frame_list_b = []
         video = cv2.VideoCapture(input_file)
         count = 0
 
-        while count < length:
+        while count < self.length:
             ret, frame = video.read()
             if not ret:
                 break
-            if int(video.get(cv2.CAP_PROP_POS_FRAMES)) % skip != 0:
+            if int(video.get(cv2.CAP_PROP_POS_FRAMES)) % self.skip != 0:
                 continue
-            lab_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2LUV)
 
-            # check this result
-            # cv2.imshow('frame',frame)
-            # cv2.imshow('labframe',lab_frame)
-            # cv2.waitKey(0)
+            # convert to LAB color space using OpenCV
+            lab_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2LAB)
 
-            frame_list_l.append(lab_frame[:,:,0])
-            frame_list_a.append(lab_frame[:,:,1])
-            frame_list_b.append(lab_frame[:,:,2])
+            frame_list_l.append(lab_frame[:, :, 0])
+            frame_list_a.append(lab_frame[:, :, 1])
+            frame_list_b.append(lab_frame[:, :, 2])
             count += 1
 
-        return np.asarray(frame_list_l),np.asarray([frame_list_a,frame_list_b])
+        # return L and A,B separately
+        return np.asarray(frame_list_l), np.asarray([frame_list_a, frame_list_b])
 
-    def slice_all(self, length=32, skip=1):
-        batchX = []
-        batchY = []
+    def slice_all(self):
+        batch_x = []
+        batch_y = []
+        # iterate over each file in the source directory
         for file_name in listdir(self.source_dir):
             input_file = join(self.source_dir, file_name)
             if isfile(input_file):
-                X,Y = self.slice_video(input_file,length,skip)
-                batchX.append(X)
-                batchY.append(Y)
-        return np.asarray(batchX),np.asarray(batchY)
+                X, Y = self.slice_video(input_file)
+                batch_x.append(X)
+                batch_y.append(Y)
+        return np.asarray(batch_x), np.asarray(batch_y)
 
-
-    def np_to_tfrecords(X, Y, file_path_prefix, verbose=True):
+    def np_to_tfrecords(self, X, Y, file_path_prefix, verbose=True):
         """
         Converts a Numpy array (or two Numpy arrays) into a tfrecord file.
         For supervised learning, feed training inputs to X and training labels to Y.
@@ -126,13 +126,44 @@ class Sample:
         if verbose:
             print "Writing {} done!".format(result_tf_file)
 
-    def process(self,length=32, skip=1):
-        X,Y = self.slice_all()
-        self.np_to_tfrecords(X,Y,self.dest_file)
-
-
+    def process(self, length=32, skip=1):
+        X, Y = self.slice_all()
+        # problem: image type matters if bit 8 or bit 32 image
+        # https://docs.opencv.org/2.4/modules/imgproc/doc/miscellaneous_transformations.html
+        x_reshaped = np.divide(X.reshape(X.shape[0], X.shape[1] * X.shape[2] * X.shape[3]), 100.0)
+        y_reshaped = np.divide(Y.reshape(Y.shape[0], Y.shape[1] * Y.shape[2] * Y.shape[3] * Y.shape[4]), 128)
+        self.np_to_tfrecords(x_reshaped, y_reshaped, self.dest_file)
 
 
 if __name__ == '__main__':
-    sample = Sample('/home/chamath/Projects/FlowChroma/dataset/in', '/home/chamath/Projects/FlowChroma/dataset/out')
-    sample.slice_video('/home/chamath/Projects/FlowChroma/dataset/out/video.avi', skip=3)
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description='Create a tfrecord for data set')
+    parser.add_argument('-s', '--source-folder',
+                        type=str,
+                        metavar='FOLDER',
+                        dest='source',
+                        help='use FOLDER as source of the videos')
+    parser.add_argument('-o', '--output-folder',
+                        type=str,
+                        metavar='FILE',
+                        dest='output',
+                        help='use FILE as destination')
+    parser.add_argument('-l', '--length',
+                        default=32,
+                        type=int,
+                        metavar='LENGTH',
+                        dest='length',
+                        help='use LENGTH as number of frames')
+    parser.add_argument('-k', '--skip',
+                        default=3,
+                        type=int,
+                        metavar='SKIP',
+                        dest='skip',
+                        help='use SKIP as number of frames between two selected frames')
+
+    args = parser.parse_args()
+
+    sample = Sample(args.source, args.output, args.length, args.skip)
+    sample.process()
