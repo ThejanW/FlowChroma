@@ -128,9 +128,9 @@ class Sample:
 
     def process(self, length=32, skip=1):
         X, Y = self.slice_all()
-        # problem: image type matters if bit 8 or bit 32 image
+        # problem: for 8 bit images
         # https://docs.opencv.org/2.4/modules/imgproc/doc/miscellaneous_transformations.html
-        x_reshaped = np.divide(X.reshape(X.shape[0], X.shape[1] * X.shape[2] * X.shape[3]), 100.0)
+        x_reshaped = np.divide(X.reshape(X.shape[0], X.shape[1] * X.shape[2] * X.shape[3]), 50.0) - 1
         y_reshaped = np.divide(Y.reshape(Y.shape[0], Y.shape[1] * Y.shape[2] * Y.shape[3] * Y.shape[4]), 128)
         self.np_to_tfrecords(x_reshaped, y_reshaped, self.dest_file)
 
