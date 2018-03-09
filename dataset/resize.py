@@ -21,7 +21,7 @@ class VideoResizer:
         :return: re-sized frame
         """
         h, w = float(img.shape[0]),float(img.shape[1])
-        expected_height, expected_width = size
+        expected_width, expected_height = size
 
         # interpolation method
         if h > expected_height or w > expected_width:  # shrinking image
@@ -36,26 +36,51 @@ class VideoResizer:
         if aspect > 1:  # horizontal image
             new_w = expected_width
             new_h = np.round(new_w / aspect).astype(int)
-            if self.equal_padding:
-                pad_vert = (expected_height - new_h) / 2.0
-                pad_top, pad_bot = np.floor(pad_vert).astype(int), np.ceil(pad_vert).astype(int)
-                pad_left, pad_right = 0, 0
+            if expected_height >= new_h:
+                if self.equal_padding:
+                    pad_vert = (expected_height - new_h) / 2.0
+                    pad_top, pad_bot = np.floor(pad_vert).astype(int), np.ceil(pad_vert).astype(int)
+                    pad_left, pad_right = 0, 0
+                else:
+                    pad_vert = (expected_height - new_h)
+                    pad_top, pad_bot = 0, pad_vert
+                    pad_left, pad_right = 0, 0
             else:
-                pad_vert = (expected_height - new_h)
-                pad_top, pad_bot = 0, pad_vert
-                pad_left, pad_right = 0, 0
+                new_h = expected_height
+                new_w = np.round(new_h * aspect).astype(int)
+                if self.equal_padding:
+                    pad_horz = (expected_width - new_w) / 2
+                    pad_left, pad_right = np.floor(pad_horz).astype(int), np.ceil(pad_horz).astype(int)
+                    pad_top, pad_bot = 0, 0
+                else:
+                    pad_horz = (expected_width - new_w)
+                    pad_left, pad_right = 0, pad_horz
+                    pad_top, pad_bot = 0, 0
 
         elif aspect < 1:  # vertical image
             new_h = expected_height
             new_w = np.round(new_h * aspect).astype(int)
-            if self.equal_padding:
-                pad_horz = (expected_width - new_w) / 2
-                pad_left, pad_right = np.floor(pad_horz).astype(int), np.ceil(pad_horz).astype(int)
-                pad_top, pad_bot = 0, 0
+            if expected_width >= new_w:
+                if self.equal_padding:
+                    pad_horz = (expected_width - new_w) / 2
+                    pad_left, pad_right = np.floor(pad_horz).astype(int), np.ceil(pad_horz).astype(int)
+                    pad_top, pad_bot = 0, 0
+                else:
+                    pad_horz = (expected_width - new_w)
+                    pad_left, pad_right = 0, pad_horz
+                    pad_top, pad_bot = 0, 0
             else:
-                pad_horz = (expected_width - new_w)
-                pad_left, pad_right = 0, pad_horz
-                pad_top, pad_bot = 0, 0
+                new_w = expected_width
+                new_h = np.round(new_w / aspect).astype(int)
+                if self.equal_padding:
+                    pad_vert = (expected_height - new_h) / 2.0
+                    pad_top, pad_bot = np.floor(pad_vert).astype(int), np.ceil(pad_vert).astype(int)
+                    pad_left, pad_right = 0, 0
+                else:
+                    pad_vert = (expected_height - new_h)
+                    pad_top, pad_bot = 0, pad_vert
+                    pad_left, pad_right = 0, 0
+
         else:  # square image
             new_h, new_w = expected_height, expected_width
             pad_left, pad_right, pad_top, pad_bot = 0, 0, 0, 0
@@ -133,4 +158,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     video_resizer = VideoResizer(args.source, args.output,args.equal_padding)
-    video_resizer.resize_all((args.height, args.width))
+    video_resizer.resize_all((args.width, args.height))

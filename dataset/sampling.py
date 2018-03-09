@@ -104,7 +104,7 @@ class Sample:
         result_tf_file = file_path_prefix + '.tfrecords'
         writer = tf.python_io.TFRecordWriter(result_tf_file)
         if verbose:
-            print "Serializing {:d} examples into {}".format(X.shape[0], result_tf_file)
+            print ("Serializing {:d} examples into {}".format(X.shape[0], result_tf_file))
 
         # iterate over each sample,
         # and serialize it as ProtoBuf.
@@ -124,7 +124,7 @@ class Sample:
             writer.write(serialized)
 
         if verbose:
-            print "Writing {} done!".format(result_tf_file)
+            print ("Writing {} done!".format(result_tf_file))
 
     def process(self, length=32, skip=1):
         X, Y = self.slice_all()
