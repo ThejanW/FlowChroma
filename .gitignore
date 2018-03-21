@@ -126,3 +126,6 @@ out/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
+
+# dataset-videos
+dataset/videos
