@@ -52,7 +52,7 @@ class ImageRecord:
 
 if __name__ == '__main__':
     import argparse
-    from dataset.utils.shared import dir_sampled, dir_lab_records
+    from dataset.utils.shared import dir_sampled, dir_lab_records, default_nn_input_height, default_nn_input_width
 
     parser = argparse.ArgumentParser(
         description='Create lab records for video files')
@@ -69,13 +69,13 @@ if __name__ == '__main__':
                         dest='output',
                         help='use FILE as destination')
     parser.add_argument('-t', '--height',
-                        default=244,
+                        default=default_nn_input_height,
                         type=int,
                         metavar='HEIGHT',
                         dest='height',
                         help='use HEIGHT as height of frames')
     parser.add_argument('-w', '--width',
-                        default=244,
+                        default=default_nn_input_width,
                         type=int,
                         metavar='WIDTH',
                         dest='width',

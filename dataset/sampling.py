@@ -13,22 +13,28 @@ class Sample:
 
     def save_sliced_video(self, input_file, output_file):
         video = cv2.VideoCapture(input_file)
-        fps = video.get(cv2.CAP_PROP_FPS)
-        size = (int(video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(video.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        out = cv2.VideoWriter(output_file, fourcc, fps, size)
-
         count = 0
+        frames = []
         while count < self.length:
             ret, frame = video.read()
             if not ret:
                 break
             if int(video.get(cv2.CAP_PROP_POS_FRAMES)) % self.skip != 0:
                 continue
-            out.write(frame)
+            frames.append(frame)
             count += 1
+        flag = len(frames) == self.length
+        fps = video.get(cv2.CAP_PROP_FPS)
+        size = (int(video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(video.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        out = cv2.VideoWriter(output_file, fourcc, fps, size)
+        # check if video has required length if not return false
+        if flag:
+            for f in frames:
+                out.write(f)
         video.release()
         out.release()
+        return flag
 
     def slice_all(self):
         # iterate over each file in the source directory
@@ -40,8 +46,9 @@ class Sample:
             new_file_name = "video_" + format(count, '05d') + ".avi"
             output_file = join(self.dest_dir, new_file_name)
             if isfile(input_file):
-                self.save_sliced_video(input_file, output_file)
-            count += 1
+                flag = self.save_sliced_video(input_file, output_file)
+                if flag:
+                    count += 1
             if count % 10 == 0:
                 print("Processed %d out of %d" % (count, len(file_list)))
         print("Sampling completed %d out of %d" % (count, len(file_list)))

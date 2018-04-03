@@ -14,7 +14,7 @@ def queue_single_images_from_folder(folder):
         files.append(join(folder, file_name))
     files = sorted(files)
     print("Identified %d files to run through rest net" % len(files))
-    file_matcher = tf.train.match_filenames_once(files)
+    file_matcher = tf.train.match_filenames_once(files)     #not guaranteed to give in sorted order
 
     # NOTE: if num_epochs is set to something different than None, then we
     # need to run tf.local_variables_initializer when launching the session!!

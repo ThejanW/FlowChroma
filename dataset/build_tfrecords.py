@@ -12,13 +12,13 @@ import tensorflow as tf
 from dataset.utils.shared import dir_lab_records, dir_restnet_csv, frames_per_video
 from dataset.utils.shared import dir_tfrecord
 
-tf.flags.DEFINE_integer("train_shards", 2,
+tf.flags.DEFINE_integer("train_shards", 80,
                         "Number of shards in training TFRecord files.")
-tf.flags.DEFINE_integer("val_shards", 2,
+tf.flags.DEFINE_integer("val_shards", 8,
                         "Number of shards in validation TFRecord files.")
-tf.flags.DEFINE_integer("test_shards", 2,
+tf.flags.DEFINE_integer("test_shards", 8,
                         "Number of shards in testing TFRecord files.")
-tf.flags.DEFINE_integer("num_threads", 2,
+tf.flags.DEFINE_integer("num_threads", 8,
                         "Number of threads to pre-process the videos.")
 FLAGS = tf.flags.FLAGS
 
@@ -218,7 +218,7 @@ class TFRecordBuilder:
 
 if __name__ == '__main__':
     import argparse
-
+    from dataset.utils.shared import training_set_size, validation_set_size, test_set_size
     parser = argparse.ArgumentParser(
         description='Resize videos from')
     parser.add_argument('-r', '--restnet-records-folder',
@@ -234,19 +234,19 @@ if __name__ == '__main__':
                         default=dir_lab_records,
                         help='use LABFOLDER  as source')
     parser.add_argument('-t', '--train',
-                        default=16,
+                        default=training_set_size,
                         type=int,
                         metavar='TRAIN',
                         dest='train',
                         help='train set size')
     parser.add_argument('-v', '--validation',
-                        default=10,
+                        default=validation_set_size,
                         type=int,
                         metavar='VALIDATION',
                         dest='validation',
                         help='use as validation test size')
     parser.add_argument('-e', '--test',
-                        default=10,
+                        default=test_set_size,
                         type=int,
                         metavar='TEST',
                         dest='test',
