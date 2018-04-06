@@ -6,19 +6,19 @@ from os.path import expanduser, join
 dir_root = join(expanduser('~'), 'flowchroma')
 dir_originals = join(dir_root, 'original')
 dir_sampled = join(dir_root, 'sampled')
-dir_restnet_images = join(dir_root, 'resized_restnet_images')
-dir_restnet_csv = join(dir_root, 'restnet_csv_records')
+dir_resnet_images = join(dir_root, 'resized_resnet_images')
+dir_resnet_csv = join(dir_root, 'resnet_csv_records')
 dir_lab_records = join(dir_root, 'lab_records')
 dir_tfrecord = join(dir_root, 'tfrecords')
-dir_checkpoints = join(dir_root, 'checkpoints')
+checkpoint_url = join(dir_root,"inception_resnet_v2_2016_08_30.ckpt")
 
 frames_per_video = 32
 default_nn_input_width = 320
 default_nn_input_height = 240
-restnet_input_height = 299
-restnet_input_width = 299
-restnet_video_chunk_size = 100
-restnet_batch_size = 100
+resnet_input_height = 299
+resnet_input_width = 299
+resnet_video_chunk_size = 100
+resnet_batch_size = 100
 
 training_set_size = 2000
 test_set_size = 239
@@ -36,8 +36,8 @@ def progressive_filename_generator(pattern='file_{}.ext'):
 
 def initialize():
     maybe_create_folder(dir_sampled)
-    maybe_create_folder(dir_restnet_images)
-    maybe_create_folder(dir_restnet_csv)
+    maybe_create_folder(dir_resnet_images)
+    maybe_create_folder(dir_resnet_csv)
     maybe_create_folder(dir_lab_records)
     maybe_create_folder(dir_tfrecord)
 

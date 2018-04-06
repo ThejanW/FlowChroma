@@ -9,7 +9,7 @@ from os.path import join
 import numpy as np
 import tensorflow as tf
 
-from dataset.utils.shared import dir_lab_records, dir_restnet_csv, frames_per_video
+from dataset.utils.shared import dir_lab_records, dir_resnet_csv, frames_per_video
 from dataset.utils.shared import dir_tfrecord
 
 tf.flags.DEFINE_integer("train_shards", 80,
@@ -22,7 +22,7 @@ tf.flags.DEFINE_integer("num_threads", 8,
                         "Number of threads to pre-process the videos.")
 FLAGS = tf.flags.FLAGS
 
-VideoMetaData = namedtuple("VideoMetaData", ["video_id", "lab_file", "restnet_file"])
+VideoMetaData = namedtuple("VideoMetaData", ["video_id", "lab_file", "resnet_file"])
 
 
 def _int64_feature(value):
@@ -46,8 +46,9 @@ def _bytes_feature_list(values):
 
 
 class TFRecordBuilder:
-    def __init__(self):
-        pass
+    def __init__(self, resnet_folder, lab_folder):
+        self.resnet_folder = resnet_folder
+        self.lab_folder = lab_folder
 
     @staticmethod
     def _to_sequence_example(video):
@@ -60,14 +61,14 @@ class TFRecordBuilder:
           A SequenceExample proto.
         """
         video_id = video.video_id
-        restnet_file = video.restnet_file
+        resnet_file = video.resnet_file
         lab_file = video.lab_file
-        restnet_record = np.load(restnet_file)
+        resnet_record = np.load(resnet_file)
         lab_images = np.load(lab_file)
         L = np.divide(lab_images[:, :, :, 0], 50.0) - 1
         A = np.divide(lab_images[:, :, :, 1], 128.0)
         B = np.divide(lab_images[:, :, :, 2], 128.0)
-        embeddings = restnet_record
+        embeddings = resnet_record
 
         # try:
         #     decoder.decode_jpeg(encoded_image)
@@ -83,7 +84,7 @@ class TFRecordBuilder:
             "video/l_layer": _bytes_feature_list(L),
             "video/a_layer": _bytes_feature_list(A),
             "video/b_layer": _bytes_feature_list(B),
-            "video/restnet_embedding": _bytes_feature_list(embeddings),
+            "video/resnet_embedding": _bytes_feature_list(embeddings),
             "video/frame_ids": _int64_feature_list([x for x in range(frames_per_video)])
         })
         sequence_example = tf.train.SequenceExample(
@@ -187,11 +188,11 @@ class TFRecordBuilder:
 
         # Wait for all the threads to terminate.
         coord.join(threads)
-        print("%s: Finished processing all %d video restnet and lab pairs in data set '%s'." %
+        print("%s: Finished processing all %d video resnet and lab pairs in data set '%s'." %
               (datetime.now(), len(video_metadata), name))
 
     @staticmethod
-    def load_and_process_metadata(restnet_records_dir, lab_records_dir):
+    def load_and_process_metadata(resnet_records_dir, lab_records_dir):
         """Loads video metadata from .npy files
 
         Args:
@@ -199,10 +200,10 @@ class TFRecordBuilder:
         Returns:
           A list of available LAB color files and restnet embedding files.
         """
-        restnet_records = []
-        for file_name in os.listdir(restnet_records_dir):
-            restnet_records.append(join(restnet_records_dir, file_name))
-        restnet_records = sorted(restnet_records)
+        resnet_records = []
+        for file_name in os.listdir(resnet_records_dir):
+            resnet_records.append(join(resnet_records_dir, file_name))
+        resnet_records = sorted(resnet_records)
 
         lab_records = []
         for file_name in os.listdir(lab_records_dir):
@@ -211,9 +212,24 @@ class TFRecordBuilder:
 
         video_metadata = []
         for id in range(len(lab_records)):
-            video_metadata.append(VideoMetaData(id, lab_records[id], restnet_records[id]))
+            video_metadata.append(VideoMetaData(id, lab_records[id], resnet_records[id]))
 
         return video_metadata
+
+    def process(self,train_size, val_size, test_size):
+        metadata = tfRecordBuilder.load_and_process_metadata(self.resnet_folder, self.lab_folder)
+        random.shuffle(metadata)
+
+        train_cutoff = train_size
+        val_cutoff = train_cutoff + val_size
+
+        train_dataset = metadata[: train_cutoff]
+        val_dataset = metadata[train_cutoff: val_cutoff]
+        test_dataset = metadata[val_cutoff:]
+
+        tfRecordBuilder.process_dataset("train", train_dataset, FLAGS.train_shards)
+        tfRecordBuilder.process_dataset("val", val_dataset, FLAGS.val_shards)
+        tfRecordBuilder.process_dataset("test", test_dataset, FLAGS.test_shards)
 
 
 if __name__ == '__main__':
@@ -221,11 +237,11 @@ if __name__ == '__main__':
     from dataset.utils.shared import training_set_size, validation_set_size, test_set_size
     parser = argparse.ArgumentParser(
         description='Resize videos from')
-    parser.add_argument('-r', '--restnet-records-folder',
+    parser.add_argument('-r', '--resnet-records-folder',
                         type=str,
                         metavar='FOLDER',
-                        default=dir_restnet_csv,
-                        dest='restnet_folder',
+                        default=dir_resnet_csv,
+                        dest='resnet_folder',
                         help='use FOLDER as source of the videos')
     parser.add_argument('-l', '--lab-record-folder',
                         type=str,
@@ -254,22 +270,5 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    tfRecordBuilder = TFRecordBuilder()
-
-    metadata = tfRecordBuilder.load_and_process_metadata(dir_restnet_csv, dir_lab_records)
-    random.shuffle(metadata)
-
-    train_size = args.train
-    val_size = args.validation
-    test_size = args.test
-
-    train_cutoff = train_size
-    val_cutoff = train_cutoff + val_size
-
-    train_dataset = metadata[: train_cutoff]
-    val_dataset = metadata[train_cutoff: val_cutoff]
-    test_dataset = metadata[val_cutoff:]
-
-    tfRecordBuilder.process_dataset("train", train_dataset, FLAGS.train_shards)
-    tfRecordBuilder.process_dataset("val", val_dataset, FLAGS.val_shards)
-    tfRecordBuilder.process_dataset("test", test_dataset, FLAGS.test_shards)
+    tfRecordBuilder = TFRecordBuilder(args.resnet_folder, args.lab_folder)
+    tfRecordBuilder.process(args.train,args.validation,args.test)

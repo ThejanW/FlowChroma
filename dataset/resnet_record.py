@@ -13,10 +13,10 @@ from dataset.embedding import maybe_download_inception, prepare_image_for_incept
     inception_resnet_v2
 from dataset.tfrecords import queue_single_images_from_folder, batch_operations
 from dataset.utils.resize import resize_pad_frame
-from dataset.utils.shared import restnet_input_height, restnet_input_width
+from dataset.utils.shared import resnet_input_height, resnet_input_width
 
 
-class RestnetRecordCreator:
+class ResnetRecordCreator:
     def __init__(self, video_dir, image_dir, record_dir, checkpoint_source):
         self.video_dir = video_dir
         self.image_dir = image_dir
@@ -49,7 +49,7 @@ class RestnetRecordCreator:
             ret, frame = video.read()
             if not ret:
                 break
-            frame = resize_pad_frame(frame, (restnet_input_width, restnet_input_height))
+            frame = resize_pad_frame(frame, (resnet_input_width, resnet_input_height))
             # output file name image_videoindex_frameindex.jpeg ex: image_00001_005.jpeg
             output_file = join(self.image_dir,
                                "image_" + format(sample_count, '05d') + "_" + format(frame_count, '03d') + ".jpeg")
@@ -126,13 +126,13 @@ class RestnetRecordCreator:
         # These are the only lines where something happens:
         # we execute the operations to get the image, compute the
         # embedding and write everything in the TFRecord
-        final_restnet_results = []
+        final_resnet_results = []
         try:
             record_count = 0
 
             while not coord.should_stop():
-                output_file = join(self.record_dir, "restnet_record_" + format(record_count, "05d"))
-                final_restnet_results+=self._write_record(operations, sess)
+                output_file = join(self.record_dir, "resnet_record_" + format(record_count, "05d"))
+                final_resnet_results+=self._write_record(operations, sess)
                 record_count += 1
                 print("Record Count %d"%record_count)
 
@@ -142,10 +142,10 @@ class RestnetRecordCreator:
         finally:
             # Ask the threads (filename queue) to stop.
             coord.request_stop()
-            final_restnet_results = sorted(final_restnet_results)
-            for chunk in chunks(final_restnet_results, frames_per_video):
+            final_resnet_results = sorted(final_resnet_results)
+            for chunk in self.chunks(final_resnet_results, frames_per_video):
                 file_index = int(re.search("image_(.*)_", str(chunk[0][0])).group(1))
-                output_file = join(self.record_dir, "restnet_record_" + format(file_index, "05d"))
+                output_file = join(self.record_dir, "resnet_record_" + format(file_index, "05d"))
                 csv_intermediate = [x.reshape(1001) for _, x in chunk]
                 csv_out = np.asarray(csv_intermediate)
                 np.save(output_file, csv_out)
@@ -166,19 +166,37 @@ class RestnetRecordCreator:
         results = sorted(zip(results[0], results[2]))
         return results
 
+    def process_all(self):
+        file_list = listdir(self.video_dir)
+        file_list = sorted(file_list)
 
-def chunks(l, n):
-    """Yield successive n-sized chunks from l."""
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
+        for chunk in self.chunks(file_list, resnet_video_chunk_size):
+            # clear temporary directory
+            files = glob.glob(self.image_dir + "/*")
+            for f in files:
+                remove(f)
+            # convert to images of the size 299x299
+            self.convert_all(chunk)
+            # pass those images to RestNet
+            self.batch_all(resnet_batch_size)
+
+            tf.reset_default_graph()
+            print("Chunk completed")
+
+    @staticmethod
+    def chunks(l, n):
+        """Yield successive n-sized chunks from l."""
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+
+
 
 
 if __name__ == '__main__':
-    from dataset.utils.shared import dir_restnet_images, dir_restnet_csv, dir_sampled, frames_per_video, \
-        restnet_video_chunk_size, restnet_batch_size
+    from dataset.utils.shared import dir_resnet_images, dir_resnet_csv, dir_sampled, frames_per_video, \
+        resnet_video_chunk_size, resnet_batch_size,checkpoint_url
     import argparse
-
-    checkpoint_url = "~/imagenet/inception_resnet_v2_2016_08_30.ckpt"
 
     parser = argparse.ArgumentParser(
         description='Resize videos from')
@@ -192,13 +210,13 @@ if __name__ == '__main__':
                         type=str,
                         metavar='FILE',
                         dest='output',
-                        default=dir_restnet_csv,
+                        default=dir_resnet_csv,
                         help='use FILE as destination')
     parser.add_argument('-p', '--temporary-folder',
                         type=str,
                         metavar='FILE',
                         dest='temporary',
-                        default=dir_restnet_images,
+                        default=dir_resnet_images,
                         help='use FILE as destination')
     parser.add_argument('-c', '--checkpoint',
                         default=checkpoint_url,
@@ -211,21 +229,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    restnetRecordConverter = RestnetRecordCreator(args.source, args.temporary, args.output,
-                                                  args.checkpoint)
+    resnetRecordConverter = ResnetRecordCreator(args.source, args.temporary, args.output,
+                                                args.checkpoint)
 
-    file_list = listdir(args.source)
-    file_list = sorted(file_list)
-
-    for chunk in chunks(file_list, restnet_video_chunk_size):
-        # clear temporary directory
-        files = glob.glob(args.temporary + "/*")
-        for f in files:
-            remove(f)
-        # convert to images of the size 299x299
-        restnetRecordConverter.convert_all(chunk)
-        # pass those images to RestNet
-        restnetRecordConverter.batch_all(restnet_batch_size)
-
-        tf.reset_default_graph()
-        print("Chunk completed")
+    resnetRecordConverter.process_all()
