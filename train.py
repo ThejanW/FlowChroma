@@ -2,7 +2,6 @@
 import glob
 import os
 import math
-import sys
 
 from keras.callbacks import ModelCheckpoint
 from keras.layers import Input
