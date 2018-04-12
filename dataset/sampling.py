@@ -5,7 +5,7 @@ import cv2
 
 
 class Sample:
-    def __init__(self, source_dir, dest_dir, length=16, skip=1):
+    def __init__(self, source_dir, dest_dir, length=3, skip=1):
         self.source_dir = source_dir
         self.dest_dir = dest_dir
         self.length = length

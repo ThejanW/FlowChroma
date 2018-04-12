@@ -7,13 +7,18 @@ class DataGenerator(keras.utils.Sequence):
     Generates data for the Keras model
     """
 
-    def __init__(self, file_ids,
+    def __init__(self,
+                 resnet_path,
+                 lab_path,
+                 file_ids,
                  batch_size=2,
-                 time_steps=16,
+                 time_steps=3,
                  h=240,
                  w=320,
                  shuffle=True):
 
+        self.resnet_path = resnet_path
+        self.lab_path = lab_path
         self.file_ids = file_ids
 
         self.batch_size = batch_size
@@ -62,8 +67,8 @@ class DataGenerator(keras.utils.Sequence):
 
         # Generate data
         for i, file_id in enumerate(batch_file_ids):
-            lab_record = np.load('/home/thejan/flowchroma/lab_records/lab_record_' + file_id + '.npy')
-            resnet_record = np.load('/home/thejan/flowchroma/resnet_csv_records/resnet_record_' + file_id + '.npy')
+            lab_record = np.load('{0}/lab_record_{1}.npy'.format(self.lab_path, file_id))
+            resnet_record = np.load('{0}/resnet_record_{1}.npy'.format(self.resnet_path, file_id))
 
             x[0][i, :, :, :, 0] = lab_record[:, :, :, 0]
             x[1][i, :, :] = resnet_record
