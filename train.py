@@ -3,6 +3,7 @@ import glob
 import os
 import math
 
+import keras.backend as K
 from keras.callbacks import ModelCheckpoint
 from keras.layers import Input
 from keras.models import load_model
@@ -130,3 +131,4 @@ model.fit_generator(generator=training_generator,
                     initial_epoch=initial_epoch,
                     callbacks=[checkpoint],
                     workers=6)
+K.clear_session()
