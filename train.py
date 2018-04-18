@@ -1,10 +1,14 @@
 """Train the model."""
+import argparse
 import glob
 import os
 import math
 
+from time import time
+
 import keras.backend as K
-from keras.callbacks import ModelCheckpoint
+
+from keras.callbacks import ModelCheckpoint, TensorBoard
 from keras.layers import Input
 from keras.models import load_model
 
@@ -14,8 +18,6 @@ from model.fusion_layer import FusionLayer
 from dataset.utils.shared import frames_per_video, default_nn_input_width, default_nn_input_height, dir_lab_records, \
     dir_resnet_csv
 from dataset.data_generator import DataGenerator
-
-import argparse
 
 parser = argparse.ArgumentParser(description='Resize videos from')
 
@@ -126,6 +128,8 @@ checkpoint = ModelCheckpoint(file_path,
                              mode='auto',
                              period=ckpt_period)
 
+tensorboard = TensorBoard(log_dir="logs/{}".format(time()), histogram_freq=0)
+
 if n_epochs_to_train <= initial_epoch:
     n_epochs_to_train += initial_epoch
 
@@ -134,6 +138,6 @@ model.fit_generator(generator=training_generator,
                     use_multiprocessing=True,
                     epochs=n_epochs_to_train,
                     initial_epoch=initial_epoch,
-                    callbacks=[checkpoint],
+                    callbacks=[checkpoint, tensorboard],
                     workers=6)
 K.clear_session()
