@@ -67,6 +67,8 @@ val_batch_size = args.val_batch_size
 n_epochs_to_train = args.n_epochs_to_train
 ckpt_period = args.ckpt_period
 
+time_steps, h, w = frames_per_video, default_nn_input_height, default_nn_input_width
+
 initial_epoch = 0
 ckpts = glob.glob("checkpoints/*.hdf5")
 if len(ckpts) != 0:
@@ -78,8 +80,6 @@ if len(ckpts) != 0:
 
 else:
     # no ckpts
-    time_steps, h, w = frames_per_video, default_nn_input_height, default_nn_input_width
-
     enc_input = Input(shape=(time_steps, h, w, 1), name='encoder_input')
     incep_out = Input(shape=(time_steps, 1001), name='inception_input')
 
@@ -100,14 +100,19 @@ dataset = {
     "validation": ['{0:05}'.format(i) for i in range(val_split, n_lab_records)]
 }
 
+basic_generator_params = {
+    "resnet_path": resnet_path,
+    "lab_path": lab_path,
+    "time_steps": time_steps,
+    "h": h,
+    "w": w
+}
 # generators
-training_generator = DataGenerator(resnet_path=resnet_path,
-                                   lab_path=lab_path,
+training_generator = DataGenerator(**basic_generator_params,
                                    file_ids=dataset['train'],
                                    batch_size=train_batch_size)
 
-validation_generator = DataGenerator(resnet_path=resnet_path,
-                                     lab_path=lab_path,
+validation_generator = DataGenerator(**basic_generator_params,
                                      file_ids=dataset['validation'],
                                      batch_size=val_batch_size)
 
