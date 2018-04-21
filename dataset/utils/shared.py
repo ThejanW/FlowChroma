@@ -12,7 +12,7 @@ dir_lab_records = join(dir_root, 'lab_records')
 dir_tfrecord = join(dir_root, 'tfrecords')
 checkpoint_url = join(dir_root,"inception_resnet_v2_2016_08_30.ckpt")
 
-frames_per_video = 32
+frames_per_video = 3
 default_nn_input_width = 320
 default_nn_input_height = 240
 resnet_input_height = 299

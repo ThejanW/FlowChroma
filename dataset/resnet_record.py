@@ -132,9 +132,9 @@ class ResnetRecordCreator:
 
             while not coord.should_stop():
                 output_file = join(self.record_dir, "resnet_record_" + format(record_count, "05d"))
-                final_resnet_results+=self._write_record(operations, sess)
+                final_resnet_results += self._write_record(operations, sess)
                 record_count += 1
-                print("Record Count %d"%record_count)
+                print("Record Count %d" % record_count)
 
         except tf.errors.OutOfRangeError:
             # The string_input_producer queue ran out of strings
@@ -190,12 +190,9 @@ class ResnetRecordCreator:
             yield l[i:i + n]
 
 
-
-
-
 if __name__ == '__main__':
     from dataset.utils.shared import dir_resnet_images, dir_resnet_csv, dir_sampled, frames_per_video, \
-        resnet_video_chunk_size, resnet_batch_size,checkpoint_url
+        resnet_video_chunk_size, resnet_batch_size, checkpoint_url
     import argparse
 
     parser = argparse.ArgumentParser(

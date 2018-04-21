@@ -5,7 +5,7 @@ In the neck of the conv-deconv network use the features from a feature extractor
 (e.g. Inception) and the RNN to fuse them with the conv output.
 """
 
-from keras.layers import Conv2D, LSTM, TimeDistributed, UpSampling2D, GlobalAveragePooling2D
+from keras.layers import Conv2D, Dense, GlobalAveragePooling2D, LSTM, TimeDistributed, UpSampling2D
 from keras.models import Model
 from keras.utils import plot_model
 
@@ -18,7 +18,7 @@ class FlowChroma:
         self.enc_input, self.incep_out = inputs
 
     @staticmethod
-    def _build_encoder(encoder_input):
+    def _encoder(encoder_input):
         x = TimeDistributed(Conv2D(64, (3, 3), activation='relu', padding='same', strides=2), name='encoder_conv1')(
             encoder_input)
         x = TimeDistributed(Conv2D(128, (3, 3), activation='relu', padding='same'), name='encoder_conv2')(x)
@@ -31,13 +31,14 @@ class FlowChroma:
         return x
 
     @staticmethod
-    def _build_rnn(rnn_input):
+    def _rnn(rnn_input):
         x = LSTM(256, return_sequences=True, name='rnn_lstm1')(rnn_input)
         x = LSTM(256, return_sequences=True, name='rnn_lstm2')(x)
+        x = TimeDistributed(Dense(256, activation='relu'), name='rnn_dense1')(x)
         return x
 
     @staticmethod
-    def _build_decoder(decoder_input):
+    def _decoder(decoder_input):
         x = TimeDistributed(Conv2D(256, (1, 1), activation='relu'))(decoder_input)
         x = TimeDistributed(Conv2D(128, (3, 3), activation='relu', padding='same'), name='decoder_conv1')(x)
         x = TimeDistributed(UpSampling2D((2, 2)), name='decoder_upsamp1')(x)
@@ -50,16 +51,16 @@ class FlowChroma:
         return x
 
     def build(self):
-        x = self._build_encoder(self.enc_input)
+        x = self._encoder(self.enc_input)
         x = TimeDistributed(GlobalAveragePooling2D())(x)
-        x = self._build_rnn(x)
+        x = self._rnn(x)
         x = Model(inputs=self.enc_input, outputs=x)
 
-        rnn_out = x.get_layer(name='rnn_lstm2').output
+        rnn_out = x.get_layer(name='rnn_dense1').output
         enc_out = x.get_layer(name='encoder_conv8').output
 
         x = FusionLayer()([enc_out, self.incep_out, rnn_out])
-        x = self._build_decoder(x)
+        x = self._decoder(x)
 
         model = Model(inputs=[self.enc_input, self.incep_out], outputs=x)
         return model

@@ -12,7 +12,7 @@ class ImageRecord:
         self.input_dir = input_dir
         self.output_dir = output_dir
         self.size = size
-        self.equal_padding =equal_padding
+        self.equal_padding = equal_padding
 
     @staticmethod
     def write_to_csv(file, output_file, size, equal_padding):
@@ -33,6 +33,12 @@ class ImageRecord:
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2LAB)
             frames.append(frame)
         frames = np.asarray(frames)
+
+        # LAB layers should be brought to [-1, +1] region
+        frames[:, :, :, 0] = np.divide(frames[:, :, :, 0], 50) - 1
+        frames[:, :, :, 1] = np.divide(frames[:, :, :, 1], 128)
+        frames[:, :, :, 2] = np.divide(frames[:, :, :, 2], 128)
+
         np.save(output_file, frames)
 
     def write_all(self):

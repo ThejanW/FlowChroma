@@ -12,7 +12,7 @@ import tensorflow as tf
 from dataset.utils.shared import dir_lab_records, dir_resnet_csv, frames_per_video
 from dataset.utils.shared import dir_tfrecord
 
-tf.flags.DEFINE_integer("train_shards", 80,
+tf.flags.DEFINE_integer("train_shards", 48,
                         "Number of shards in training TFRecord files.")
 tf.flags.DEFINE_integer("val_shards", 8,
                         "Number of shards in validation TFRecord files.")
@@ -65,9 +65,9 @@ class TFRecordBuilder:
         lab_file = video.lab_file
         resnet_record = np.load(resnet_file)
         lab_images = np.load(lab_file)
-        L = np.divide(lab_images[:, :, :, 0], 50.0) - 1
-        A = np.divide(lab_images[:, :, :, 1], 128.0)
-        B = np.divide(lab_images[:, :, :, 2], 128.0)
+        L = lab_images[:, :, :, 0]
+        A = lab_images[:, :, :, 1]
+        B = lab_images[:, :, :, 2]
         embeddings = resnet_record
 
         # try:
@@ -216,7 +216,7 @@ class TFRecordBuilder:
 
         return video_metadata
 
-    def process(self,train_size, val_size, test_size):
+    def process(self, train_size, val_size, test_size):
         metadata = tfRecordBuilder.load_and_process_metadata(self.resnet_folder, self.lab_folder)
         random.shuffle(metadata)
 
@@ -235,6 +235,7 @@ class TFRecordBuilder:
 if __name__ == '__main__':
     import argparse
     from dataset.utils.shared import training_set_size, validation_set_size, test_set_size
+
     parser = argparse.ArgumentParser(
         description='Resize videos from')
     parser.add_argument('-r', '--resnet-records-folder',
@@ -271,4 +272,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     tfRecordBuilder = TFRecordBuilder(args.resnet_folder, args.lab_folder)
-    tfRecordBuilder.process(args.train,args.validation,args.test)
+    tfRecordBuilder.process(args.train, args.validation, args.test)
