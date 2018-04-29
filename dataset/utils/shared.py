@@ -24,6 +24,8 @@ training_set_size = 2000
 test_set_size = 239
 validation_set_size = 200
 
+resnet_output = 1536
+
 
 def maybe_create_folder(folder):
     makedirs(folder, exist_ok=True)

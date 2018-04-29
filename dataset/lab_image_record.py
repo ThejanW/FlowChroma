@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 
 from dataset.utils.resize import resize_pad_frame
+from skimage import color
 
 
 class ImageRecord:
@@ -30,7 +31,8 @@ class ImageRecord:
             if not ret:
                 break
             frame = resize_pad_frame(frame, size, equal_padding=equal_padding)
-            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2LAB)
+            # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2LAB)
+            frame = color.rgb2lab(frame)
             frames.append(frame)
         frames = np.asarray(frames)
 
