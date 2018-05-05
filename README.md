@@ -1,7 +1,7 @@
 # FlowChroma
 
 
-## INTRODUCTION
+## Introduction
 
 Given a greyscale image, colorizing it to achieve a natural look has been a much-explored research problem in the recent years. A primary goal has been to produce diverse colorizations, reversing the many-to-one nature of capturing an image in black and white, while also providing plausible colorizations that apply correct colors to identified objects. The image colorization problem has been explored extensively, but colorizing black and white videos has largely been left behind. Video colorization could be used as a video preprocessing technique, such as to enhance CCTV footage, and to restore old movies and documentaries.
 
