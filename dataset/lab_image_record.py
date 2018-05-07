@@ -96,5 +96,5 @@ if __name__ == '__main__':
                         help='use PAD to determine distribution of padding')
 
     args = parser.parse_args()
-    imageRecord = ImageRecord(args.source, args.output, (args.width, args.height), args.equal_padding)
+    imageRecord = ImageRecord(args.source, args.output, (args.height, args.width), args.equal_padding)
     imageRecord.write_all()

@@ -14,7 +14,7 @@ def resize_pad_frame(img, size, pad_color=255, equal_padding=True):
     :return: re-sized frame
     """
     h, w = float(img.shape[0]), float(img.shape[1])
-    expected_width, expected_height = size
+    expected_height, expected_width = size
 
     # interpolation method
     if h > expected_height or w > expected_width:  # shrinking image

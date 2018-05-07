@@ -8,7 +8,7 @@ from skimage import color
 
 from dataset.utils.inception_utils import inception_resnet_v2_predict
 from dataset.utils.resize import resize_pad_frame
-from dataset.utils.shared import frames_per_video
+from dataset.utils.shared import frames_per_video, default_nn_input_width, default_nn_input_height, resnet_input_height, resnet_input_width
 from model import FusionLayer
 
 
@@ -28,22 +28,24 @@ def get_l_layer(frames):
     lab_frames = []
 
     for frame in frames:
-        lab_frame = resize_pad_frame(frame, (320, 240), equal_padding=True)
-        # lab_frame = cv2.cvtColor(lab_frame, cv2.COLOR_RGB2LAB)
+        lab_frame = resize_pad_frame(frame, (default_nn_input_height, default_nn_input_width), equal_padding=True)
+        # Convert to grayscale and rgb and take the L layer ?
         lab_frame = color.rgb2lab(lab_frame)
         lab_frames.append(lab_frame)
 
     lab_frames = np.asarray(lab_frames)
     original_l_layers = np.copy(lab_frames[:, :, :, 0])
     lab_frames[:, :, :, 0] = np.divide(lab_frames[:, :, :, 0], 50) - 1  # data loss
-    return (original_l_layers, lab_frames[:, :, :, np.newaxis, 0])
+    return original_l_layers, lab_frames[:, :, :, np.newaxis, 0]
 
 
 def get_resnet_records(frames):
     resnet_input = []
     for frame in frames:
-        resized_frame = resize_pad_frame(frame, (299, 299))
-        resnet_input.append(resized_frame)
+        resized_frame = resize_pad_frame(frame, (resnet_input_height, resnet_input_width))
+        gray_scale_frame = cv2.cvtColor(resized_frame, cv2.COLOR_RGB2GRAY)
+        gray_scale_frame_colored = cv2.cvtColor(gray_scale_frame, cv2.COLOR_GRAY2RGB)
+        resnet_input.append(gray_scale_frame_colored)
     resnet_input = np.asarray(resnet_input)
 
     predictions = inception_resnet_v2_predict(resnet_input)
@@ -163,4 +165,4 @@ if __name__ == '__main__':
                         help='output file')
 
     args = parser.parse_args()
-    manage_process(args.source,args.output)
+    manage_process(args.source, args.output)

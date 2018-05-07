@@ -50,12 +50,14 @@ class ResnetRecordCreator:
             ret, frame = video.read()
             if not ret:
                 break
-            frame = resize_pad_frame(frame, (resnet_input_width, resnet_input_height))
-            frames.append(frame)
+            frame = resize_pad_frame(frame, (resnet_input_height, resnet_input_width))
+            gray_scale_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+            gray_scale_frame_colored = cv2.cvtColor(gray_scale_frame, cv2.COLOR_GRAY2RGB)
+            frames.append(gray_scale_frame_colored)
         return frames
 
     def predict_all(self, video_details):
-        video_indexes,video_frames = video_details
+        video_indexes, video_frames = video_details
         predictions = inception_resnet_v2_predict(video_frames)
         self.write_files(video_indexes, predictions)
 
@@ -66,7 +68,7 @@ class ResnetRecordCreator:
             file_index = video_indexes[i]
             file_content = predictions[frames_start:frames_end]
             output_file = join(self.record_dir, "resnet_record_" + format(file_index, "05d"))
-            np.save(output_file,file_content)
+            np.save(output_file, file_content)
 
     def process_all(self):
         file_list = listdir(self.video_dir)
