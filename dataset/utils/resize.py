@@ -26,7 +26,7 @@ def resize_pad_frame(img, size, pad_color=255, equal_padding=True):
     aspect = w / h
 
     # compute scaling and pad sizing
-    if aspect > 1:  # horizontal image
+    if aspect >= 1:  # horizontal image
         new_w = expected_width
         new_h = np.round(new_w / aspect).astype(int)
         if expected_height >= new_h:
@@ -73,10 +73,6 @@ def resize_pad_frame(img, size, pad_color=255, equal_padding=True):
                 pad_vert = (expected_height - new_h)
                 pad_top, pad_bot = 0, pad_vert
                 pad_left, pad_right = 0, 0
-
-    else:  # square image
-        new_h, new_w = expected_height, expected_width
-        pad_left, pad_right, pad_top, pad_bot = 0, 0, 0, 0
 
     # set pad color
     if len(img.shape) is 3 and not isinstance(pad_color,
