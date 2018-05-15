@@ -13,8 +13,8 @@ dir_tfrecord = join(dir_root, 'tfrecords')
 checkpoint_url = join(dir_root,"inception_resnet_v2_2016_08_30.ckpt")
 
 frames_per_video = 3
-default_nn_input_width = 320
 default_nn_input_height = 240
+default_nn_input_width = 320
 resnet_input_height = 299
 resnet_input_width = 299
 resnet_video_chunk_size = 100
@@ -23,6 +23,8 @@ resnet_batch_size = 100
 training_set_size = 2000
 test_set_size = 239
 validation_set_size = 200
+
+resnet_output = 1536
 
 
 def maybe_create_folder(folder):

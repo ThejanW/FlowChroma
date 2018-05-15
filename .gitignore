@@ -129,3 +129,6 @@ out/
 
 # dataset-videos
 dataset/videos
+
+checkpoints/
+logs/

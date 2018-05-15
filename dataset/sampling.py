@@ -29,6 +29,7 @@ class Sample:
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         out = cv2.VideoWriter(output_file, fourcc, fps, size)
         # check if video has required length if not return false
+        assert len(frames) == frames_per_video
         if flag:
             for f in frames:
                 out.write(f)

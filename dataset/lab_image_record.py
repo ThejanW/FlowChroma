@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 
 from dataset.utils.resize import resize_pad_frame
+from skimage import color
 
 
 class ImageRecord:
@@ -30,7 +31,8 @@ class ImageRecord:
             if not ret:
                 break
             frame = resize_pad_frame(frame, size, equal_padding=equal_padding)
-            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2LAB)
+            # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2LAB)
+            frame = color.rgb2lab(frame)
             frames.append(frame)
         frames = np.asarray(frames)
 
@@ -94,5 +96,5 @@ if __name__ == '__main__':
                         help='use PAD to determine distribution of padding')
 
     args = parser.parse_args()
-    imageRecord = ImageRecord(args.source, args.output, (args.width, args.height), args.equal_padding)
+    imageRecord = ImageRecord(args.source, args.output, (args.height, args.width), args.equal_padding)
     imageRecord.write_all()
