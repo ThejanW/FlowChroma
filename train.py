@@ -95,11 +95,11 @@ n_resnet_records = len(glob.glob('{0}/*.npy'.format(dir_resnet_csv)))
 
 assert n_lab_records == n_resnet_records
 
-val_split = math.floor(n_lab_records * val_split_ratio)
+val_split = int(math.floor(n_lab_records * val_split_ratio))
 
 dataset = {
-    "train": ['{0:05}'.format(i) for i in range(val_split)],
-    "validation": ['{0:05}'.format(i) for i in range(val_split, n_lab_records)]
+    "validation": ['{0:05}'.format(i) for i in range(val_split)],
+    "train": ['{0:05}'.format(i) for i in range(val_split, n_lab_records)]
 }
 
 basic_generator_params = {
