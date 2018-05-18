@@ -11,6 +11,7 @@ import keras.backend as K
 from keras.callbacks import ModelCheckpoint, TensorBoard
 from keras.layers import Input
 from keras.models import load_model
+from keras.optimizers import Adam
 
 from model.flowchroma_network import FlowChroma
 from model.fusion_layer import FusionLayer
@@ -38,6 +39,11 @@ parser.add_argument('-s', '--split-ratio',
                     default=0.1,
                     dest='val_split_ratio',
                     help='validation split ratio')
+parser.add_argument('-lr', '--learning-rate',
+                    type=float,
+                    default=0.001,
+                    dest='lr',
+                    help='learning rate for the optimizer')
 parser.add_argument('-t', '--train-batch-size',
                     type=int,
                     dest='train_batch_size',
@@ -64,6 +70,7 @@ args = parser.parse_args()
 resnet_path = args.resnet_path
 lab_path = args.lab_path
 val_split_ratio = args.val_split_ratio
+lr = args.lr
 train_batch_size = args.train_batch_size
 val_batch_size = args.val_batch_size
 n_epochs_to_train = args.n_epochs_to_train
@@ -86,9 +93,10 @@ else:
     incep_out = Input(shape=(time_steps, 1536), name='inception_input')
 
     model = FlowChroma([enc_input, incep_out]).build()
-    # generate_model_summaries(model)
-    model.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
-    os.makedirs("checkpoints", exist_ok=True)
+
+opt = Adam(lr=lr)
+model.compile(optimizer=opt, loss='mse', metrics=['accuracy'])
+# generate_model_summaries(model)
 
 n_lab_records = len(glob.glob('{0}/*.npy'.format(dir_lab_records)))
 n_resnet_records = len(glob.glob('{0}/*.npy'.format(dir_resnet_csv)))
@@ -119,7 +127,7 @@ validation_generator = DataGenerator(**basic_generator_params,
                                      batch_size=val_batch_size)
 
 os.makedirs("checkpoints", exist_ok=True)
-file_path = "checkpoints/flowchroma-epoch-{epoch:05d}-train_acc-{acc:.4f}-val_acc-{val_acc:.4f}.hdf5"
+file_path = "checkpoints/flowchroma-epoch-{epoch:05d}-lr-" + str(lr) + "-train_acc-{acc:.4f}-val_acc-{val_acc:.4f}.hdf5"
 checkpoint = ModelCheckpoint(file_path,
                              monitor=['acc', 'val_acc'],
                              verbose=1,
