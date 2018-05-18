@@ -84,7 +84,7 @@ if len(ckpts) != 0:
     # there are ckpts
     latest_ckpt = max(ckpts, key=os.path.getctime)
     print("loading from checkpoint:", latest_ckpt)
-    initial_epoch = int(latest_ckpt[latest_ckpt.find("-epoch-") + len("-epoch-"):latest_ckpt.rfind("-train_acc-")])
+    initial_epoch = int(latest_ckpt[latest_ckpt.find("-epoch-") + len("-epoch-"):latest_ckpt.rfind("-lr-")])
     model = load_model(latest_ckpt, custom_objects={'FusionLayer': FusionLayer})
 
 else:
