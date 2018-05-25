@@ -20,7 +20,7 @@ from dataset.utils.shared import frames_per_video, default_nn_input_width, defau
     dir_resnet_csv
 from dataset.data_generator import DataGenerator
 
-parser = argparse.ArgumentParser(description='Resize videos from')
+parser = argparse.ArgumentParser(description='Train flowchroma')
 
 parser.add_argument('-r', '--resnet-records',
                     type=str,
