@@ -28,9 +28,11 @@ def get_l_layer(frames):
     lab_frames = []
 
     for frame in frames:
-        lab_frame = resize_pad_frame(frame, (default_nn_input_height, default_nn_input_width), equal_padding=True)
+        resized_frame = resize_pad_frame(frame, (default_nn_input_height, default_nn_input_width), equal_padding=True)
         # Convert to grayscale and rgb and take the L layer ?
-        lab_frame = color.rgb2lab(lab_frame)
+        gray_scale_frame = color.rgb2gray(resized_frame)
+        gray_scale_colored_frame = color.gray2rgb(gray_scale_frame)
+        lab_frame = color.rgb2lab(gray_scale_colored_frame)
         lab_frames.append(lab_frame)
 
     lab_frames = np.asarray(lab_frames)
@@ -111,8 +113,11 @@ def post_process_predictions(original_l_layers, predicted_AB_layers):
 
 
 def save_output_video(frames, output_file):
+    count = 0
     for frame in frames:
         cv2.imshow('image', frame)
+        cv2.imwrite('/home/chamath/'+"img"+str(count)+".jpg", frame)
+        count+=1
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
