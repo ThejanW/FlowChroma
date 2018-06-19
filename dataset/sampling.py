@@ -15,6 +15,10 @@ class Sample:
         video = cv2.VideoCapture(input_file)
         count = 0
         frames = []
+        frames_count = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
+        start_frame = int(frames_count/2)
+        video.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
+
         while count < self.length:
             ret, frame = video.read()
             if not ret:
