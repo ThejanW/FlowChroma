@@ -1,4 +1,4 @@
-from os import listdir
+from os import listdir, makedirs
 from os.path import join
 
 import cv2
@@ -25,12 +25,14 @@ class FrameExtractor:
             frames.append(frame)
 
         for i, frame in enumerate(frames):
-            frame_name = join(self.output_dir, file.split(".")[0] + "_img_{:05d}" + '.' + self.type).format(i)
+            frame_name = join(self.output_dir, file.split(".")[0].split("/")[-1] + "_img_{:05d}" + '.' + self.type).format(i)
             cv2.imwrite(frame_name, frame)
 
 
 
     def write_all(self):
+        makedirs(self.output_dir, exist_ok=True)
+        
         file_list = []
         for file_name in listdir(self.input_dir):
             if file_name.endswith(".avi"):
