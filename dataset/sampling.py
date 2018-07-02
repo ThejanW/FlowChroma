@@ -12,30 +12,37 @@ class Sample:
         self.skip = skip
 
     def save_sliced_video(self, input_file, output_file):
-        video = cv2.VideoCapture(input_file)
-        count = 0
-        frames = []
-        while count < self.length:
-            ret, frame = video.read()
-            if not ret:
-                break
-            if int(video.get(cv2.CAP_PROP_POS_FRAMES)) % self.skip != 0:
-                continue
-            frames.append(frame)
-            count += 1
-        flag = len(frames) == self.length
-        fps = video.get(cv2.CAP_PROP_FPS)
-        size = (int(video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(video.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        out = cv2.VideoWriter(output_file, fourcc, fps, size)
-        # check if video has required length if not return false
-        assert len(frames) == frames_per_video
-        if flag:
-            for f in frames:
-                out.write(f)
-        video.release()
-        out.release()
-        return flag
+        try:
+            video = cv2.VideoCapture(input_file)
+            count = 0
+            frames = []
+            frames_count = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
+            start_frame = int(frames_count/2)
+            video.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
+
+            while count < self.length:
+                ret, frame = video.read()
+                if not ret:
+                    break
+                if int(video.get(cv2.CAP_PROP_POS_FRAMES)) % self.skip != 0:
+                    continue
+                frames.append(frame)
+                count += 1
+            flag = len(frames) == self.length
+            fps = video.get(cv2.CAP_PROP_FPS)
+            size = (int(video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(video.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+            fourcc = cv2.VideoWriter_fourcc(*'XVID')
+            out = cv2.VideoWriter(output_file, fourcc, fps, size)
+            # check if video has required length if not return false
+            # assert len(frames) == frames_per_video
+            if flag:
+                for f in frames:
+                    out.write(f)
+            video.release()
+            out.release()
+            return flag
+        except:
+            return False
 
     def slice_all(self):
         # iterate over each file in the source directory
