@@ -12,6 +12,8 @@ dir_lab_records = join(dir_root, 'lab_records')
 dir_tfrecord = join(dir_root, 'tfrecords')
 dir_test = join(dir_root, 'test')
 dir_test_results = join(dir_root, 'test_results')
+dir_frame_lab_records = join(dir_root, 'frame_lab_records')
+dir_frame_resnet_records = join(dir_root, 'frame_resnet_records')
 checkpoint_url = join(dir_root,"inception_resnet_v2_2016_08_30.ckpt")
 
 frames_per_video = 3
@@ -46,6 +48,8 @@ def initialize():
     maybe_create_folder(dir_tfrecord)
     maybe_create_folder(dir_test)
     maybe_create_folder(dir_test_results)
+    maybe_create_folder(dir_frame_lab_records)
+    maybe_create_folder(dir_frame_resnet_records)
 
 
 initialize()
