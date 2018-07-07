@@ -127,13 +127,14 @@ validation_generator = DataGenerator(**basic_generator_params,
                                      batch_size=val_batch_size)
 
 os.makedirs("checkpoints", exist_ok=True)
-file_path = "checkpoints/flowchroma-epoch-{epoch:05d}-lr-" + str(lr) + "-train_acc-{acc:.4f}-val_acc-{val_acc:.4f}.hdf5"
+file_path = "checkpoints/flowchroma-epoch-{epoch:05d}-lr-" + str(
+    lr) + "-train_loss-{loss:.4f}-val_loss-{val_loss:.4f}.hdf5"
 checkpoint = ModelCheckpoint(file_path,
-                             monitor=['acc', 'val_acc'],
+                             monitor=['loss', 'val_loss'],
                              verbose=1,
                              save_best_only=False,
                              save_weights_only=False,
-                             mode='auto',
+                             mode='min',
                              period=ckpt_period)
 
 tensorboard = TensorBoard(log_dir="logs/{}".format(time()), histogram_freq=0)
