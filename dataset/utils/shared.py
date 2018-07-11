@@ -14,7 +14,7 @@ dir_test = join(dir_root, 'test')
 dir_test_results = join(dir_root, 'test_results')
 dir_frame_lab_records = join(dir_root, 'frame_lab_records')
 dir_frame_resnet_records = join(dir_root, 'frame_resnet_records')
-checkpoint_url = join(dir_root,"inception_resnet_v2_2016_08_30.ckpt")
+checkpoint_url = join(dir_root,"updated_resnet_v2 .h5")
 
 frames_per_video = 3
 default_nn_input_height = 240
@@ -28,7 +28,7 @@ training_set_size = 2000
 test_set_size = 239
 validation_set_size = 200
 
-resnet_output = 1536
+resnet_output = 1000
 
 
 def maybe_create_folder(folder):
