@@ -10,7 +10,7 @@ from dataset.utils.inception_utils import inception_resnet_v2_predict
 from dataset.utils.resize import resize_pad_frame
 from dataset.utils.shared import frames_per_video, default_nn_input_width, default_nn_input_height, resnet_input_height, resnet_input_width, dir_test, dir_test_results
 from model import FusionLayer
-import keras.backend as K
+
 
 def get_video(file):
     '''
@@ -193,7 +193,6 @@ def save_output_video(frames, output_file):
 
 
 def process_test_file(file):
-    print('Processing file: ' + file)
     # Pre-processing
     frames = get_video(dir_test+'/'+file)
     (rgb2lab_frames, gray2lab_frames) = get_lab_layer(frames)
@@ -204,6 +203,10 @@ def process_test_file(file):
     X = get_nn_input(processed_l_layer, predictions)
 
     # Predicting
+    ckpts = glob.glob("checkpoints/*.hdf5")
+    latest_ckpt = max(ckpts, key=os.path.getctime)
+    print("loading from checkpoint:", latest_ckpt)
+    model = load_model(latest_ckpt, custom_objects={'FusionLayer': FusionLayer})
     predictions = []
     for i in range(X[0].shape[0]):
         predictions.append(model.predict([X[0][i:i + 1], X[1][i:i + 1]])[0])  # shape is (1, 3, 240, 320, 2)
@@ -215,11 +218,6 @@ def process_test_file(file):
 
     save_output_video(frame_predictions, dir_test_results+ '/' + file.split('.')[0] + '.avi')
 
-K.clear_session()
-ckpts = glob.glob("checkpoints/*.hdf5")
-latest_ckpt = max(ckpts, key=os.path.getctime)
-model = load_model(latest_ckpt, custom_objects={'FusionLayer': FusionLayer})
-print("loading from checkpoint:", latest_ckpt)
 
 files = listdir(dir_test)
 for file in files:
