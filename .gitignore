@@ -133,3 +133,4 @@ dataset/videos
 checkpoints/
 checkpoints_backup/
 logs/
+references/paper/egpaper_for_review.pdf
