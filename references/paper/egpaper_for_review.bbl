@@ -1,0 +1,170 @@
+\begin{thebibliography}{10}\itemsep=-1pt
+
+\bibitem{DBLP:journals/corr/abs-1712-03400}
+F.~Baldassarre, D.~G. Mor{\'{\i}}n, and L.~Rod{\'{e}}s{-}Guirao.
+\newblock Deep koalarization: Image colorization using cnns and
+  inception-resnet-v2.
+\newblock {\em CoRR}, abs/1712.03400, 2017.
+
+\bibitem{10.1007/978-3-540-88690-7_10}
+G.~Charpiat, M.~Hofmann, and B.~Sch{\"o}lkopf.
+\newblock Automatic image colorization via multimodal predictions.
+\newblock In D.~Forsyth, P.~Torr, and A.~Zisserman, editors, {\em Computer
+  Vision -- ECCV 2008}, pages 126--139, Berlin, Heidelberg, 2008. Springer
+  Berlin Heidelberg.
+
+\bibitem{DBLP:journals/corr/ChengYS16}
+Z.~Cheng, Q.~Yang, and B.~Sheng.
+\newblock Deep colorization.
+\newblock {\em CoRR}, abs/1605.00075, 2016.
+
+\bibitem{Chia:2011:SCI:2070781.2024190}
+A.~Y.-S. Chia, S.~Zhuo, R.~K. Gupta, Y.-W. Tai, S.-Y. Cho, P.~Tan, and S.~Lin.
+\newblock Semantic colorization with internet images.
+\newblock {\em ACM Trans. Graph.}, 30(6):156:1--156:8, Dec. 2011.
+
+\bibitem{7410429}
+A.~Deshpande, J.~Rock, and D.~Forsyth.
+\newblock Learning large-scale automatic image colorization.
+\newblock In {\em 2015 IEEE International Conference on Computer Vision
+  (ICCV)}, pages 567--575, Dec 2015.
+
+\bibitem{Gupta:2012:ICU:2393347.2393402}
+R.~K. Gupta, A.~Y.-S. Chia, D.~Rajan, E.~S. Ng, and H.~Zhiyong.
+\newblock Image colorization using similar images.
+\newblock In {\em Proceedings of the 20th ACM International Conference on
+  Multimedia}, MM '12, pages 369--378, New York, NY, USA, 2012. ACM.
+
+\bibitem{DBLP:journals/corr/HariharanAGM14a}
+B.~Hariharan, P.~A. Arbel{\'{a}}ez, R.~B. Girshick, and J.~Malik.
+\newblock Hypercolumns for object segmentation and fine-grained localization.
+\newblock {\em CoRR}, abs/1411.5752, 2014.
+
+\bibitem{Huang:2005:AED:1101149.1101223}
+Y.-C. Huang, Y.-S. Tung, J.-C. Chen, S.-W. Wang, and J.-L. Wu.
+\newblock An adaptive edge detection based colorization algorithm and its
+  applications.
+\newblock In {\em Proceedings of the 13th Annual ACM International Conference
+  on Multimedia}, MULTIMEDIA '05, pages 351--354, New York, NY, USA, 2005. ACM.
+
+\bibitem{Iizuka:2016:LCJ:2897824.2925974}
+S.~Iizuka, E.~Simo-Serra, and H.~Ishikawa.
+\newblock Let there be color!: Joint end-to-end learning of global and local
+  image priors for automatic image colorization with simultaneous
+  classification.
+\newblock {\em ACM Trans. Graph.}, 35(4):110:1--110:11, July 2016.
+
+\bibitem{Irony:2005:CE:2383654.2383683}
+R.~Irony, D.~Cohen-Or, and D.~Lischinski.
+\newblock Colorization by example.
+\newblock In {\em Proceedings of the Sixteenth Eurographics Conference on
+  Rendering Techniques}, EGSR '05, pages 201--210, Aire-la-Ville, Switzerland,
+  Switzerland, 2005. Eurographics Association.
+
+\bibitem{DBLP:journals/corr/abs-1712-00080}
+H.~Jiang, D.~Sun, V.~Jampani, M.~Yang, E.~G. Learned{-}Miller, and J.~Kautz.
+\newblock Super slomo: High quality estimation of multiple intermediate frames
+  for video interpolation.
+\newblock {\em CoRR}, abs/1712.00080, 2017.
+
+\bibitem{FCVID}
+Y.-G. Jiang, Z.~Wu, J.~Wang, X.~Xue, and S.-F. Chang.
+\newblock Exploiting feature and class relationships in video categorization
+  with regularized deep neural networks.
+\newblock {\em {IEEE} Transactions on Pattern Analysis and Machine
+  Intelligence}, 40(2):352--364, 2018.
+
+\bibitem{DBLP:journals/corr/KingmaB14}
+D.~P. Kingma and J.~Ba.
+\newblock Adam: {A} method for stochastic optimization.
+\newblock {\em CoRR}, abs/1412.6980, 2014.
+
+\bibitem{DBLP:journals/corr/LarssonMS16}
+G.~Larsson, M.~Maire, and G.~Shakhnarovich.
+\newblock Learning representations for automatic colorization.
+\newblock {\em CoRR}, abs/1603.06668, 2016.
+
+\bibitem{Levin:2004:CUO:1015706.1015780}
+A.~Levin, D.~Lischinski, and Y.~Weiss.
+\newblock Colorization using optimization.
+\newblock {\em ACM Trans. Graph.}, 23(3):689--694, Aug. 2004.
+
+\bibitem{Luan:2007:NIC:2383847.2383887}
+Q.~Luan, F.~Wen, D.~Cohen-Or, L.~Liang, Y.-Q. Xu, and H.-Y. Shum.
+\newblock Natural image colorization.
+\newblock In {\em Proceedings of the 18th Eurographics Conference on Rendering
+  Techniques}, EGSR'07, pages 309--320, Aire-la-Ville, Switzerland,
+  Switzerland, 2007. Eurographics Association.
+
+\bibitem{Morimoto:2009:ACG:1599301.1599333}
+Y.~Morimoto, Y.~Taguchi, and T.~Naemura.
+\newblock Automatic colorization of grayscale images using multiple images on
+  the web.
+\newblock In {\em SIGGRAPH '09: Posters}, SIGGRAPH '09, pages 32:1--32:1, New
+  York, NY, USA, 2009. ACM.
+
+\bibitem{qu-2006-manga}
+Y.~Qu, T.-T. Wong, and P.-A. Heng.
+\newblock Manga colorization.
+\newblock {\em ACM Transactions on Graphics (SIGGRAPH 2006 issue)},
+  25(3):1214--1220, July 2006.
+
+\bibitem{Ratliff2009}
+N.~D. Ratliff, D.~Silver, and J.~A. Bagnell.
+\newblock Learning to search: Functional gradient techniques for imitation
+  learning.
+\newblock {\em Autonomous Robots}, 27(1):25--53, Jul 2009.
+
+\bibitem{Ruderman98statisticsof}
+D.~L. Ruderman, T.~W. Cronin, and C.-C. Chiao.
+\newblock Statistics of cone responses to natural images: Implications for
+  visual coding.
+\newblock {\em Journal of the Optical Society of America A}, 15:2036--2045,
+  1998.
+
+\bibitem{6575125}
+B.~Sheng, H.~Sun, M.~Magnor, and P.~Li.
+\newblock Video colorization using parallel optimization in feature space.
+\newblock {\em IEEE Transactions on Circuits and Systems for Video Technology},
+  24(3):407--417, March 2014.
+
+\bibitem{DBLP:journals/corr/SzegedyVISW15}
+C.~Szegedy, V.~Vanhoucke, S.~Ioffe, J.~Shlens, and Z.~Wojna.
+\newblock Rethinking the inception architecture for computer vision.
+\newblock {\em CoRR}, abs/1512.00567, 2015.
+
+\bibitem{1467343}
+Y.-W. Tai, J.~Jia, and C.-K. Tang.
+\newblock Local color transfer via probabilistic segmentation by
+  expectation-maximization.
+\newblock In {\em 2005 IEEE Computer Society Conference on Computer Vision and
+  Pattern Recognition (CVPR'05)}, volume~1, pages 747--754 vol. 1, June 2005.
+
+\bibitem{4587673}
+E.~Tola, V.~Lepetit, and P.~Fua.
+\newblock A fast local descriptor for dense matching.
+\newblock In {\em 2008 IEEE Conference on Computer Vision and Pattern
+  Recognition}, pages 1--8, June 2008.
+
+\bibitem{Welsh:2002:TCG:566654.566576}
+T.~Welsh, M.~Ashikhmin, and K.~Mueller.
+\newblock Transferring color to greyscale images.
+\newblock {\em ACM Trans. Graph.}, 21(3):277--280, July 2002.
+
+\bibitem{1621234}
+L.~Yatziv and G.~Sapiro.
+\newblock Fast image and video colorization using chrominance blending.
+\newblock {\em IEEE Transactions on Image Processing}, 15(5):1120--1129, May
+  2006.
+
+\bibitem{DBLP:journals/corr/ZhangIE16}
+R.~Zhang, P.~Isola, and A.~A. Efros.
+\newblock Colorful image colorization.
+\newblock {\em CoRR}, abs/1603.08511, 2016.
+
+\bibitem{DBLP:journals/corr/ZhangZIGLYE17}
+R.~Zhang, J.~Zhu, P.~Isola, X.~Geng, A.~S. Lin, T.~Yu, and A.~A. Efros.
+\newblock Real-time user-guided image colorization with learned deep priors.
+\newblock {\em CoRR}, abs/1705.02999, 2017.
+
+\end{thebibliography}
