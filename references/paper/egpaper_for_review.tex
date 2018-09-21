@@ -25,7 +25,7 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{FlowChroma - Deep Learning Based Automated Video Colorization}
+\title{FlowChroma - A Deep Recurrent Neural Network for Video Colorization}
 
 % Authors at the same institution
 %\author{First Author \hspace{2cm} Second Author \\
@@ -53,7 +53,6 @@ The proposed solution includes a novel deep recurrent encoder-decoder architectu
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
-
 Colorizing a grayscale image to achieve a natural look has been a much-explored research problem in the recent years, especially with the rise of deep learning-based approaches for image processing. A primary goal has been to produce diverse colorizations, while also providing plausible colorizations that apply correct colors to identified objects. Desaturating an image is a surjective operation, but it is not injective. Hence, there are multiple possible colors to choose from when considering a pixel in a grayscale image --– it is a one-to-many mapping.
 
 Compared to the image colorization problem, colorizing black and white videos has largely been left behind. This problem has abundant training data, as one could easily desaturate a video and test the colorization against the original video. Video colorization could be used as a video preprocessing technique, such as to enhance CCTV footage, and to restore old movies and documentaries. One could argue that video colorization could be taken as a direct extension of image colorization, where successive application of frame colorization would produce a colorized video. But obviously, there is no guarantee that the selected image colorization technique would color successive frames consistently, known as temporal coherence, since it would consider each frame as a separate task, ignoring the contextual connections between frames.  This would result in flickering colors, reducing the usefulness of such results.
@@ -94,7 +93,7 @@ Most of the fully-automatic, parametric image colorization solutions can be exte
 
 \begin{figure*}
 	\includegraphics[width=\textwidth]{kernel-stride-table_1.jpg}
-    \caption{FlowChroma Architecture: CNN Encoder (lavender), Decoder (green), Fusion layer (red dashed cuboid) and Inception network (light blue) are all applied to every temporal slice of the input.}
+    \caption{FlowChroma Architecture: The CNN encoder extracts local features while the Inception network extracts high level semantic information from a frame. The stacked LSTM grasps temporal features from a sequence of frames. The outputs from the CNN encoder, Inception network and the LSTM are then fused together in the fusion layer to provide inputs to the colorization network or the CNN decoder. Note that the CNN encoder, decoder, fusion layer and Inception network are all applied to every temporal slice of the input.}
 \end{figure*}
 
 When modeling the video colorization problem as a learnable function, we have chosen the CIE La*b* color space to represent video frames. According to Ruderman et al.\cite{Ruderman98statisticsof}, La*b* color space was developed to minimize correlation between the three coordinate axes of the color space. La*b* color space provides three decorrelated, principal channels corresponding to an achromatic luminance channel L and two chromatic channels as a* and b*. 
@@ -106,9 +105,9 @@ The chromatic channels a* and b* defines an Euclidean space where the distance t
 
 \subsection{Proposed Architecture}
 
-The video sequence colorization process of our model can be divided into five main components; the CNN encoder, global feature extractor, stacked LSTM, fusion layer and the CNN decoder. We include Inception-ResNet-v2 network as a global feature extractor; this is a transfer learning technique, drawing inspiration from the works of Iizuka et al. and Baldassarre et al. This significantly reduces the computational complexity related to training of the model. We use LSTMs in our network to support video colorization for the first time, taking a novel approach in this domain. The proposed detailed, layer-wise architecture is illustrated in Figure 1, where the CNN encoder is shown in lavender at the top, the stacked LSTMs in red, and the CNN decoder in green towards the bottom right.
+The video sequence colorization process of our model can be divided into five main components; as shown in Figure 1, the CNN encoder, global feature extractor, stacked LSTM, fusion layer and the CNN decoder. We include Inception-ResNet-v2 network as a global feature extractor; this is a transfer learning technique, drawing inspiration from the works of Iizuka et al. and Baldassarre et al. This significantly reduces the computational complexity related to training of the model. We use LSTMs in our network to support video colorization for the first time, taking a novel approach in this domain. 
 
-The CNN encoder extracts local features while the Inception-ResNet-v2 extracts high level semantic information such as objects and environments from an individual frame. A stacked LSTM is being employed to grasp temporal features of a sequence of frames. The outputs from the CNN encoder, Inception network and the LSTM are then fused together in the fusion layer to provide inputs to the colorization network or the CNN decoder. We assume that the CNN decoder predicts $a*$ and $b*$ layers related to the input luminance frame at the current time step in a spatio-temporal manner.
+As shown in Figure 1, The CNN encoder extracts local features while the Inception-ResNet-v2 extracts high level semantic information such as objects and environments from an individual frame. A stacked LSTM is being employed to grasp temporal features of a sequence of frames. The outputs from the CNN encoder, Inception network and the LSTM are then fused together in the fusion layer to provide inputs to the colorization network or the CNN decoder. We assume that the CNN decoder predicts $a*$ and $b*$ layers related to the input luminance frame at the current time step in a spatio-temporal manner.
 
 %-------------------------------------------------------------------------
 \subsection{Grasping Local Features of each Individual Frame}
@@ -127,7 +126,7 @@ Fusing local and global level spatial features with temporal features will be do
 \begin{figure}[!h]
   \centering
   \includegraphics[width=0.5\textwidth]{fusion-layer.png}
-  \caption{Fusion Layer}
+  \caption{Fusion Layer - the outputs of the Inception network and the LSTM are replicated and stacked with the CNN encoder's output.}
 \end{figure}
 
 \subsection{Colorization Network}
@@ -174,27 +173,27 @@ In terms of raw colorization, our model generalizes commonly encountered scenes 
 
 \begin{figure}[!h]
   \centering
-  \includegraphics[width=0.5\textwidth]{original-fc-grass-building.png}
-  \caption{\textit{FlowChroma generalizes commonly encountered scenes and objects and assigns them appropriate colors during inference. Here, our framework discerns that the foreground contains a grassy area and assigns it a green color (right), whereas the ground truth is brown (left).}}
+  \includegraphics[width=0.5\textwidth]{original-fc-grass-building.jpg}
+  \caption{FlowChroma generalizes commonly encountered scenes and objects and assigns them appropriate colors during inference. Here, our framework discerns that the foreground contains a grassy area and assigns it a green color (right), whereas the ground truth is brown (left).}
 \end{figure}
 
 \begin{figure}[!h]
   \centering
-  \includegraphics[width=0.5\textwidth]{bw-fc-parachute.png}
+  \includegraphics[width=0.5\textwidth]{bw-fc-parachute.jpg}
   \label{}{\footnotesize Fig. 4(a)}
 \end{figure}
 
 \begin{figure}[!h]
   \centering
-  \includegraphics[width=0.5\textwidth]{bw-fc-fifa.png}
+  \includegraphics[width=0.5\textwidth]{bw-fc-fifa.jpg}
   \label{}{\footnotesize Fig. 4(b)}
 \end{figure}
 
 \begin{figure}[!h]
   \centering
-  \includegraphics[width=0.5\textwidth]{bw-fc-lady-face.png}
+  \includegraphics[width=0.5\textwidth]{bw-fc-lady-face.jpg}
   \label{}{\footnotesize Fig. 4(c)}
-  \caption{\textit{FlowChroma generates a considerable variation of colors in each scene throughout the colorization results, as demonstrated by this set of figures. In first row, Note how the parachute and the flag are colored in red hues while the sky is in blue. In third row, the eye color and skin tones over different regions in the face make the frame appear more realistic.}}
+  \caption{FlowChroma generates a considerable variation of colors in each scene throughout the colorization results, as demonstrated by this set of figures. In first row, Note how the parachute and the flag are colored in red hues while the sky is in blue. In third row, the eye color and skin tones over different regions in the face make the frame appear more realistic.}
 \end{figure}
 
 The novelty in our model lies in the use of LSTMs to maintain contextual frame information across time, and we observe its effects on colorization at two scales;  locally and globally. At a global level, Flowchroma maintains the overall color composition of a scene throughout the video better than the baseline image colorization model. At a local level, the baseline model sometimes mistakenly colorizes small regions of a frame with inappropriate colors, but Flowchroma avoids such mistakes.
@@ -203,28 +202,33 @@ An example of this is shown in Figure 5(a), which depicts a herd of elephants st
 
 \begin{figure*}[!h]
 	\includegraphics[width=\textwidth]{fc-dk-elephants.jpg}
+    \centering
     \label{}{\footnotesize Fig. 5(a)}
 \end{figure*}
 \begin{figure*}[!h]
 	\includegraphics[width=\textwidth]{fc-dk-shooting.png}
+	\centering    
     \label{}{\footnotesize Fig. 5(b)}
 \end{figure*}
 \begin{figure*}[!h]
-	\includegraphics[width=\textwidth]{fc-dk-mobile-phone.png}
-    \label{}{\footnotesize Fig. 5(c)}
-    \caption{\textit{In each of the figures 5(a), (b) and (c), the top and bottom rows show the video frame sequences colored by FlowChroma and the baseline model respectively. These show the superior global color palette maintenance throughout the scene by the LSTM.}}
+	\includegraphics[width=\textwidth]{fc-dk-mobile-phone.jpg}
+	\centering
+    \label{center}{\footnotesize Fig. 5(c)}
+    \caption{In each of the figures 5(a), (b) and (c), the top and bottom rows show the video frame sequences colored by FlowChroma and the baseline model respectively. These show the superior global color palette maintenance throughout the scene by the LSTM.}
 \end{figure*}
 
 \begin{figure*}[!h]
 \includegraphics[width=\textwidth]{fc-dk-baby-tub.png}
+\centering
 \label{}{\footnotesize Fig. 6(a)}
 \vspace{5.00mm}
 \end{figure*}
 
 \begin{figure*}[!h]
 \includegraphics[width=\textwidth]{fc-dk-playing.png}
+\centering
 \label{}{\footnotesize Fig. 6(b)}
-\caption{\textit{The two figures 6(a) and 6(b) show video frame sequences of FlowChroma (top row) and the baseline model (bottom) in which the local color uniformity is better maintained by FlowChroma. Note how the baseline model flickers with blue color patches.}}
+\caption{The two figures 6(a) and 6(b) show video frame sequences of FlowChroma (top row) and the baseline model (bottom) in which the local color uniformity is better maintained by FlowChroma. Note how the baseline model flickers with blue color patches.}
 \end{figure*}
 
 At a local scale, the LSTM affects how FlowChroma decides colors should be assigned even when it cannot fully identify the progression of a previously detected region. In Figure 6(a), the background contains a wall that is uniformly colored throughout the frames by FlowChroma, while having blue patches in the baseline model’s output. This is an example of the downsides of considering each frame as a separate colorization task, as done by image colorization models. Figure 6(b) contains an off-white board that is consistently colored by FlowChroma, whereas the baseline model again adds blue color patches.
@@ -242,14 +246,13 @@ Furthermore, the introduction of new objects into a scene changes its context an
 
 When the movements in a video are smooth, most of the time the system identifies the objects and applies appropriate, temporally coherent coloring. When the movement in the scenario speeds up, the flow of movement breaks and thus the colorization quality degrades fast, especially in terms of segmentation and appropriate coloring.
 
-\section{CONCLUSIONS}
+\section{Conclusions}
 
-Contemporary image colorization techniques are not directly applicable to video colorization as they treat each frame in the video as a separate colorization task without maintaining temporal coherence between frames. This degrades the quality and usability of the colorized videos. We propose FlowChroma, a novel colorization framework with a recurrent neural network - LSTM - added to maintain contextual information between frames.
-We show that the LSTM maintains the image colorization quality of current methods intact while also successfully minimizing flickering between frames. It maintains the overall color palette of a scenario across subsequent frames at a global level, while coloring identified objects within a scene consistently at a local level. 
+Contemporary image colorization techniques are not directly applicable to video colorization as they treat each video frame as a separate colorization task without maintaining temporal coherence between frames. We propose FlowChroma, a novel colorization framework with a recurrent neural network - LSTM - added to maintain temporal and contextual information between frames. We show that the LSTM maintains the image colorization quality of current methods intact while also successfully minimizing flickering between frames. It maintains the overall color palette of a scenario across subsequent frames at a global level, while coloring identified objects within a scene consistently at a local level. 
 
-The use of LSTM also has some drawbacks; firstly, color consistency is degraded when a new object suddenly comes into the frame. Secondly, fast movements in a scene confuses the LSTM's understanding of the movement, which causes colors to bleed out from object edges and introduces flickering. One potential solution would be to normalize the speed of movements.
+The use of LSTM also has some drawbacks; firstly, color consistency is degraded when a new object suddenly comes into the frame. Secondly, fast movements in a scene confuses the LSTM's understanding of the movement, which causes colors to bleed out from object edges and introduces blobs of flickering. One potential solution would be to normalize the speed of movements. Furthermore, we observed that the main causes of flickering in FlowChroma are high action and object frequency, and the sudden introduction of new objects into a scenario. 
 
-Furthermore, we observed that the main causes of flickering in FlowChroma are high action and object frequency, and the sudden introduction of new objects into a scenario. 
+We achieve the goal of maintaining temporal and contextual coherence in video colorization with LSTMs and as future work, we hope to develop a video colorization benchmark with a standardized dataset.
 
 
 %-------------------------------------------------------------------------

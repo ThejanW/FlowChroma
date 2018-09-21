@@ -50,13 +50,13 @@
 \citation{DBLP:journals/corr/SzegedyVISW15}
 \citation{Ruderman98statisticsof}
 \@writefile{toc}{\contentsline {section}{\numberline {3}\hskip -1em.\nobreakspace  {}Approach}{2}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces FlowChroma Architecture: CNN Encoder (lavender), Decoder (green), Fusion layer (red dashed cuboid) and Inception network (light blue) are all applied to every temporal slice of the input.}}{3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces FlowChroma Architecture: The CNN encoder extracts local features while the Inception network extracts high level semantic information from a frame. The stacked LSTM grasps temporal features from a sequence of frames. The outputs from the CNN encoder, Inception network and the LSTM are then fused together in the fusion layer to provide inputs to the colorization network or the CNN decoder. Note that the CNN encoder, decoder, fusion layer and Inception network are all applied to every temporal slice of the input.}}{3}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}\hskip -1em.\nobreakspace  {}Proposed Architecture}{4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}\hskip -1em.\nobreakspace  {}Grasping Local Features of each Individual Frame}{4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}\hskip -1em.\nobreakspace  {}Grasping Global Features of each Individual Frame}{4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.4}\hskip -1em.\nobreakspace  {}Grasping Temporal Features of a Frame Sequence}{4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.5}\hskip -1em.\nobreakspace  {}Fusing Local and Global Spatial Features with Temporal Features}{4}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Fusion Layer}}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Fusion Layer - the outputs of the Inception network and the LSTM are replicated and stacked with the CNN encoder's output.}}{4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.6}\hskip -1em.\nobreakspace  {}Colorization Network}{4}}
 \citation{DBLP:journals/corr/KingmaB14}
 \citation{FCVID}
@@ -64,23 +64,23 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.8}\hskip -1em.\nobreakspace  {}Training}{5}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}\hskip -1em.\nobreakspace  {}Experiments}{5}}
 \@writefile{toc}{\contentsline {section}{\numberline {5}\hskip -1em.\nobreakspace  {}Results}{5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces \textit  {FlowChroma generalizes commonly encountered scenes and objects and assigns them appropriate colors during inference. Here, our framework discerns that the foreground contains a grassy area and assigns it a green color (right), whereas the ground truth is brown (left).}}}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces FlowChroma generalizes commonly encountered scenes and objects and assigns them appropriate colors during inference. Here, our framework discerns that the foreground contains a grassy area and assigns it a green color (right), whereas the ground truth is brown (left).}}{6}}
 \newlabel{}{{5}{6}}
 \newlabel{}{{5}{6}}
 \newlabel{}{{5}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces \textit  {FlowChroma generates a considerable variation of colors in each scene throughout the colorization results, as demonstrated by this set of figures. In first row, Note how the parachute and the flag are colored in red hues while the sky is in blue. In third row, the eye color and skin tones over different regions in the face make the frame appear more realistic.}}}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces FlowChroma generates a considerable variation of colors in each scene throughout the colorization results, as demonstrated by this set of figures. In first row, Note how the parachute and the flag are colored in red hues while the sky is in blue. In third row, the eye color and skin tones over different regions in the face make the frame appear more realistic.}}{6}}
 \newlabel{}{{5}{7}}
 \newlabel{}{{5}{7}}
-\newlabel{}{{5}{7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces \textit  {In each of the figures 5(a), (b) and (c), the top and bottom rows show the video frame sequences colored by FlowChroma and the baseline model respectively. These show the superior global color palette maintenance throughout the scene by the LSTM.}}}{7}}
+\newlabel{center}{{5}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces In each of the figures 5(a), (b) and (c), the top and bottom rows show the video frame sequences colored by FlowChroma and the baseline model respectively. These show the superior global color palette maintenance throughout the scene by the LSTM.}}{7}}
 \newlabel{}{{5}{7}}
 \citation{DBLP:journals/corr/abs-1712-00080}
 \bibstyle{ieee}
 \bibdata{egbib}
 \bibcite{DBLP:journals/corr/abs-1712-03400}{1}
 \newlabel{}{{5}{8}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces \textit  {The two figures 6(a) and 6(b) show video frame sequences of FlowChroma (top row) and the baseline model (bottom) in which the local color uniformity is better maintained by FlowChroma. Note how the baseline model flickers with blue color patches.}}}{8}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}\hskip -1em.\nobreakspace  {}CONCLUSIONS}{8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces The two figures 6(a) and 6(b) show video frame sequences of FlowChroma (top row) and the baseline model (bottom) in which the local color uniformity is better maintained by FlowChroma. Note how the baseline model flickers with blue color patches.}}{8}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}\hskip -1em.\nobreakspace  {}Conclusions}{8}}
 \bibcite{10.1007/978-3-540-88690-7_10}{2}
 \bibcite{DBLP:journals/corr/ChengYS16}{3}
 \bibcite{Chia:2011:SCI:2070781.2024190}{4}
