@@ -61,7 +61,7 @@ class DataGenerator(keras.utils.Sequence):
         """
 
         x = [np.empty((self.batch_size, self.time_steps, self.h, self.w, 1)),
-             np.empty((self.batch_size, self.time_steps, 1536))]
+             np.empty((self.batch_size, self.time_steps, 1000))]
 
         y = np.empty((self.batch_size, self.time_steps, self.h, self.w, 2))
 
